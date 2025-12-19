@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartTotalMessage = document.getElementById("cart-total");
     const totalPriceDisplay = document.getElementById("total-price");
     const checkOutBtn = document.getElementById("checkout-btn");
+    const deleteBtn = document.getElementById("delete-btn");
 
     products.forEach(product => {
         const productDiv = document.createElement("div");
@@ -37,6 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCart();
     }
 
+    function removefromCart(itemId) {
+        const removeitem = cart.findIndex(i => i.id === itemId);
+        if (removeitem !== -1) {
+            cart.splice(removeitem, 1);
+            renderCart();
+        }
+    }
+
     function renderCart() {
         cartItems.innerText = "";
         let totalPrice = 0;
@@ -45,11 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
             cartTotalMessage.classList.remove("hidden");
             cart.forEach((item, index) => {
                 totalPrice += item.price;
-                const cartItem = document.createElement('div')
-                cartItem.innerHTML = `${item.name}-$${item.price.toFixed(2)}`;
+                const cartItem = document.createElement('div');
+                cartItem.classList.add("item");
+                cartItem.innerHTML = `<span>${item.name}-$${item.price.toFixed(2)}</span>
+                <button data-id="${item.id}">Delete</button>`;
                 // console.log(cartItem)
+
                 cartItems.appendChild(cartItem);
                 totalPriceDisplay.textContent = `${totalPrice.toFixed(2)}`;
+
+
 
             })
         }
@@ -58,6 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
             totalPriceDisplay.textContent = `0.00`
         }
     }
+
+    cartItems.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+            const itemId = parseInt(e.target.getAttribute("data-id"));
+            removefromCart(itemId);
+        }
+    })
 
     checkOutBtn.addEventListener("click", () => {
         cart.length = 0
